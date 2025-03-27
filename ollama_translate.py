@@ -66,12 +66,19 @@ The answer should not be enclosed in any tags!"""
             
             # Обработка ответа
             response_data = response.json()
-            translated_text = response_data["response"]
+            # Извлекаем translated_text из JSON
+            if isinstance(response_data.get("response"), dict):
+                return response_data["response"].get("translated_text", "")
+            elif isinstance(response_data.get("response"), str):
+                try:
+                    # Если ответ пришел как строка JSON
+                    json_response = json.loads(response_data["response"])
+                    return json_response.get("translated_text", "")
+                except json.JSONDecodeError:
+                    # Если это просто строка с переводом
+                    return response_data["response"]
             
-            if isinstance(translated_text, str):
-                return translated_text
-            else:
-                return translated_text.get("translated_text", "")
+            return ""
                 
         except Exception as e:
             print(f"Error during translation: {e}")
