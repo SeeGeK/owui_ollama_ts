@@ -109,6 +109,8 @@ class Pipeline:
         # Assistant message will be translated from source_assistant to target_assistant
         target_assistant: Optional[str] = "ru"
 
+        show_orig_text: bool
+
     def __init__(self):
         # Pipeline filters are only compatible with Open WebUI
         # You can think of filter pipeline as a middleware that can be used to edit the form data before it is sent to the OpenAI API.
@@ -126,7 +128,8 @@ class Pipeline:
             **{
                 "pipelines": ["*"],  # Connect to all pipelines
                 "ollama_url": "http://localhost:11434/api/generate",
-                "ollama_model": "qwen2.5-coder:7b-instruct"
+                "ollama_model": "qwen2.5-coder:7b-instruct",
+                "show_orig_text": "false"
             }
         )
 
@@ -145,7 +148,7 @@ class Pipeline:
     async def on_valves_updated(self):
         # This function is called when the valves are updated.
         pass
-
+    
     async def inlet(self, body: dict, user: Optional[dict] = None) -> dict:
         print(f"inlet:{__name__}")
 
@@ -163,7 +166,7 @@ class Pipeline:
 
         for message in reversed(messages):
             if message["role"] == "user":
-                message["content"] = translated_user_message
+                message["content"] = translated_user_message if not self.valves.show_orig_text else text_to_translate + "\n\n=== translated ===\n" + translated_user_message
                 break
 
         body = {**body, "messages": messages}
@@ -186,7 +189,7 @@ class Pipeline:
 
         for message in reversed(messages):
             if message["role"] == "assistant":
-                message["content"] = translated_assistant_message
+                message["content"] = translated_assistant_message if not self.valves.show_orig_text else text_to_translate + "\n\n=== translated ===\n" + translated_assistant_message
                 break
 
         body = {**body, "messages": messages}
