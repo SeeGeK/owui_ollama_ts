@@ -182,10 +182,10 @@ class Pipeline:
       
         print(f"Translated assistant message: {translated_assistant_message}")
 
-        for message in reversed(messages):
-            if message["role"] == "assistant":
-                message["content"] = translated_assistant_message if not self.valves.show_orig_text else text_to_translate + "\n\n<translated>" + translated_assistant_message + "</<translated>>"
-                break
+       # for message in reversed(messages):
+         #   if message["role"] == "assistant":
+       #         message["content"] = translated_assistant_message if not self.valves.show_orig_text else text_to_translate + "\n\n<translated>" + translated_assistant_message + "</<translated>>"
+       #         break
 
-        #body = {**body, "messages": messages}
+      #  body = {**body, "messages": messages}
         return body
