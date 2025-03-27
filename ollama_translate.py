@@ -8,7 +8,7 @@ import json
 from utils.pipelines.main import get_last_user_message, get_last_assistant_message
 
 class Translator:
-    def __init__(self, ollama_endpoint="127.0.0.1:11434", ollama_model="phi4:latest"):
+    def __init__(self, ollama_endpoint="http://127.0.0.1:11434/api/generate", ollama_model="phi4:latest"):
         self.ollama_endpoint = ollama_endpoint
         self.ollama_model = ollama_model
         
@@ -60,7 +60,7 @@ The answer should not be enclosed in any tags!"""
         
         try:
             # Отправка запроса
-            response = requests.post(f"http://{self.ollama_endpoint}/api/generate", 
+            response = requests.post(self.ollama_endpoint, 
                                    json=req)
             response.raise_for_status()
             
@@ -118,7 +118,7 @@ class Pipeline:
         self.valves = self.Valves(
             **{
                 "pipelines": ["*"],  # Connect to all pipelines
-                "ollama_url": "http://localhost:11434",
+                "ollama_url": "http://localhost:11434/api/generate",
                 "ollama_model": "qwen2.5-coder:7b-instruct"
             }
         )
