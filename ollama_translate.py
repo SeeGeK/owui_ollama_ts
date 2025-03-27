@@ -166,7 +166,7 @@ class Pipeline:
 
         for message in reversed(messages):
             if message["role"] == "user":
-                message["content"] = translated_user_message if not self.valves.show_orig_text else text_to_translate + "\n\n=== translated ===\n" + translated_user_message
+                message["content"] = translated_user_message
                 break
 
         body = {**body, "messages": messages}
