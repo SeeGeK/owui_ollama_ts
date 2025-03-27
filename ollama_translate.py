@@ -152,8 +152,7 @@ class Pipeline:
     async def inlet(self, body: dict, user: Optional[dict] = None) -> dict:
         print(f"inlet:{__name__}")
 
-        messages = body["messages"]
-        user_message = get_last_user_message(messages)
+        user_message = body["messages"][-1]["content"]
 
         print(f"User message: {user_message}")
 
@@ -164,12 +163,7 @@ class Pipeline:
 
         print(f"Translated user message: {translated_user_message}")
 
-        for message in reversed(messages):
-            if message["role"] == "user":
-                message["content"] = translated_user_message
-                break
-
-        body = {**body, "messages": messages}
+        body["messages"][-1]["content"] = translated_user_message
         return body
 
     async def outlet(self, body: dict, user: Optional[dict] = None) -> dict:
@@ -189,7 +183,7 @@ class Pipeline:
 
         for message in reversed(messages):
             if message["role"] == "assistant":
-                message["content"] = translated_assistant_message if not self.valves.show_orig_text else text_to_translate + "\n\n=== translated ===\n" + translated_assistant_message
+                message["content"] = translated_assistant_message if not self.valves.show_orig_text else text_to_translate + "\n\n<translated>" + translated_assistant_message + "</<translated>>"
                 break
 
         body = {**body, "messages": messages}
