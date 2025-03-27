@@ -161,7 +161,7 @@ class Pipeline:
 
         for message in reversed(messages):
             if message["role"] == "user":
-                message["content"] = translated_user_message
+                message["content"] = "translated_user_message"
                 break
 
         body = {**body, "messages": messages}
