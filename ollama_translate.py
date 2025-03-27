@@ -77,16 +77,6 @@ The answer should not be enclosed in any tags!"""
             print(f"Error during translation: {e}")
             return None
 
-# Пример использования
-if __name__ == "__main__":
-    translator = Translator()
-    text_to_translate = "Hello, world! This is a test translation."
-    translated = translator.translate(text_to_translate, target_lang="russian")
-    print(translated)
-
-
-
-
 class Pipeline:
 
     class Valves(BaseModel):
@@ -102,6 +92,7 @@ class Pipeline:
 
         # Valves
         ollama_url: str
+        ollama_model: str
 
         # Source languages
         # User message will be translated from source_user to target_user
@@ -127,9 +118,8 @@ class Pipeline:
         self.valves = self.Valves(
             **{
                 "pipelines": ["*"],  # Connect to all pipelines
-                "ollama_url": os.getenv(
-                    "OLLAMA_API_BASE_URL", "http://localhost:11434"
-                ),
+                "ollama_url": "http://localhost:11434",
+                "ollama_model": "qwen2.5-coder:7b-instruct"
             }
         )
 
@@ -158,7 +148,7 @@ class Pipeline:
         print(f"User message: {user_message}")
 
         # Translate user message
-        translator = Translator(self.valves.libretranslate_url, "qwen2.5-coder:7b-instruct")
+        translator = Translator(self.valves.ollama_url, self.valves.ollama_model)
         text_to_translate = user_message
         translated_user_message = translator.translate(text_to_translate, target_lang=self.valves.target_user)
 
@@ -181,7 +171,7 @@ class Pipeline:
         print(f"Assistant message: {assistant_message}")
 
         # Translate assistant message
-        translator = Translator(self.valves.libretranslate_url, "qwen2.5-coder:7b-instruct")
+        translator = Translator(self.valves.ollama_url, self.valves.ollama_model)
         text_to_translate = assistant_message
         translated_assistant_message = translator.translate(text_to_translate, target_lang=self.valves.target_assistant)
       
