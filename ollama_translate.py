@@ -177,6 +177,7 @@ class Pipeline:
         # Translate assistant message
         translator = Translator(self.valves.ollama_url, self.valves.ollama_model)
         text_to_translate = assistant_message
+        text_to_translate = text_to_translate.replace("\"", "-")
         translated_assistant_message = translator.translate(text_to_translate, target_lang=self.valves.target_assistant)
       
         print(f"Translated assistant message: {translated_assistant_message}")
