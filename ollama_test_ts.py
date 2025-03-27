@@ -150,7 +150,7 @@ class Pipeline:
         print(f"inlet:{__name__}")
 
         last_message = body["messages"][-1]["content"]
-        body["messages"][-1]["content"] = last_message + "!!!!!!!!!!!"
+        body["messages"][-1]["content"] = "who are you?"
 
         return body
 
